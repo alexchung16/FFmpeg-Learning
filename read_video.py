@@ -14,6 +14,7 @@ import os
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
+import cv2 as cv
 import ffmpeg
 
 # input_video = './data/time.mp4'
@@ -87,6 +88,7 @@ if __name__ == "__main__":
         height = int(video_info['height'])
         width = int(video_info['width'])
         num_frames = int(video_info['nb_frames'])
+        frame_rate = int(eval(video_info['r_frame_rate']))
 
         stream = ffmpeg.input(input_video)
         stream = ffmpeg.output(stream, 'pipe:', format='rawvideo', pix_fmt='rgb24')
@@ -96,10 +98,17 @@ if __name__ == "__main__":
         video = np.frombuffer(out_video, np.uint8)
         video = np.reshape(video, (-1, height, width, 3))
 
+        # 1s = 1000ms
+        wait_time = int(1000 / frame_rate)
+
         for frame in range(num_frames):
 
-            plt.imshow(video[frame,:, :, :])
-            plt.show()
+            # plt.imshow(video[frame,:, :, :])
+            # plt.show()
+            cv.imshow('optical flow', video[frame,:, :, :])
+            k = cv.waitKey(wait_time) & 0xff
+            if k == 27:
+                break
 
     except ffmpeg.Error as e:
         print(e.stderr.decode(), file=sys.stderr)
