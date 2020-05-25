@@ -36,7 +36,7 @@ if __name__ == "__main__":
     for k, v in probe['format'].items():
         print(k, ':', v)
 
-
+    # convert video codec to h.264
     def convert_format(ffmpeg_exec="ffmpeg", input_file=None, output_file=None, codec="libx264"):
 
        convert_command = f'{ffmpeg_exec} -y -i {input_file} -map 0 -c:v {codec} -c:a copy {output_file}'
